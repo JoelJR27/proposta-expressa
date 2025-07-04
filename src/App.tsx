@@ -1,10 +1,14 @@
 import Header from "./components/Header";
+import Cta from "./components/Cta";
 
 function App() {
   return (
-    <main className="min-h-screen w-full bg-background">
+    <>
       <Header />
-    </main>
+      <main className="min-h-screen w-full bg-background">
+        <Cta />
+      </main>
+    </>
   );
 }
 
