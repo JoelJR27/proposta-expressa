@@ -1,7 +1,5 @@
-export default function handleScrollTo<E>(selector: string): void {
-  const htmlElement: E = document.querySelector(selector);
-  window.scrollTo({
-    top: htmlElement.offsetTop,
-    behavior: "smooth",
-  });
+export default function handleScrollTo(ref: React.RefObject<HTMLElement | null>): void {
+  if (ref.current) {
+    ref.current.scrollIntoView({ behavior: "smooth" });
+  }
 }
