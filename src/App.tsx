@@ -1,10 +1,22 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Header } from "./components/Header";
 import { CallToAction } from "./components/CallToAction";
 import { ProposalForm } from "./components/ProposalForm";
+import type { ProposalFormData } from "./types/FormData";
 
 function App() {
+  const [proposalFormData, setProposalFormData] = useState<ProposalFormData>({
+    clientName: "",
+    freelancerName: "",
+    projectDescription: "",
+    items: [""],
+    deadline: "",
+    totalPrice: "",
+    paymentTerms: "",
+    notes: "",
+  });
   const formRef = useRef<HTMLFormElement | null>(null);
+  console.log(proposalFormData);
   return (
     <>
       <Header.Root>
@@ -29,7 +41,44 @@ function App() {
             <CallToAction.Image />
           </CallToAction.Grid>
         </CallToAction.Root>
-        <ProposalForm.Root ref={formRef}>Scroll to Form</ProposalForm.Root>
+        <ProposalForm.Root ref={formRef}>
+          <div className="grid grid-cols-2 gap-4">
+            <span>
+              <ProposalForm.Label htmlFor="clientName">
+                Nome do cliente
+              </ProposalForm.Label>
+              <ProposalForm.Input
+                id="clientName"
+                setFormData={setProposalFormData}
+                field="clientName"
+                proposalFormData={proposalFormData}
+              />
+            </span>
+            <span>
+              <ProposalForm.Label htmlFor="freelancerName">
+                Nome do Freelancer
+              </ProposalForm.Label>
+              <ProposalForm.Input
+                id="freelancerName"
+                setFormData={setProposalFormData}
+                field="freelancerName"
+                proposalFormData={proposalFormData}
+              />
+            </span>
+          </div>
+          <span>
+            <ProposalForm.Label htmlFor="projectDescription">
+              Projeto / serviço
+            </ProposalForm.Label>
+            <ProposalForm.Textarea
+              id="projectDescription"
+              field="projectDescription"
+              proposalFormData={proposalFormData}
+              setProposalFormData={setProposalFormData}
+            ></ProposalForm.Textarea>
+          </span>
+          
+        </ProposalForm.Root>
       </main>
     </>
   );

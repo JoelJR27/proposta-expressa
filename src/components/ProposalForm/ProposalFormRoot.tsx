@@ -9,7 +9,7 @@ export const ProposalFormRoot = forwardRef<
   ProposalFormRootProps
 >((props, ref) => {
   return (
-    <form className="border border-border p-4 m-2 rounded-[3px]" ref={ref}>
+    <form className="flex flex-col gap-10 bg-white border border-border p-4 m-2 rounded-default-radius" ref={ref}>
       {props.children}
     </form>
   );
