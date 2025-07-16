@@ -8,7 +8,7 @@ export function ProposalFormLabel({
 }: ProposalFormLabelProps) {
   return (
     <label
-      className="font-secondary text-primary-text font-light italic text-sm"
+      className="font-secondary text-primary-text font-light italic text-sm max-xs:text-[10px] md:text-base"
       htmlFor={htmlFor}
     >
       {children}

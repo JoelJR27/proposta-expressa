@@ -12,7 +12,8 @@
   --color-background: #f9fafb;
   --color-border: #e5e7eb;
   --color-primary-blue: #3b82f6;
-  --color-secondary-blue: 	#1E40AF;
+  --color-secondary-blue: #1e40af;
   --breakpoint-xs: 30rem;
   --radius-default-radius: 4px;
+  --breakpoint-xs: 320px
 }

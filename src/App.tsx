@@ -1,22 +1,17 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Header } from "./components/Header";
 import { CallToAction } from "./components/CallToAction";
 import { ProposalForm } from "./components/ProposalForm";
-import type { ProposalFormData } from "./types/FormData";
+import { useProposalForm } from "./hooks/useProposalForm";
+import { createNewItem } from "./utils/createNewItem";
+import { Button } from "./components/Button";
 
 function App() {
-  const [proposalFormData, setProposalFormData] = useState<ProposalFormData>({
-    clientName: "",
-    freelancerName: "",
-    projectDescription: "",
-    items: [""],
-    deadline: "",
-    totalPrice: "",
-    paymentTerms: "",
-    notes: "",
-  });
+  const { proposalFormData, setProposalFormData, updateField, updateItem } =
+    useProposalForm();
   const formRef = useRef<HTMLFormElement | null>(null);
   console.log(proposalFormData);
+  console.log(proposalFormData.items);
   return (
     <>
       <Header.Root>
@@ -41,44 +36,141 @@ function App() {
             <CallToAction.Image />
           </CallToAction.Grid>
         </CallToAction.Root>
-        <ProposalForm.Root ref={formRef}>
-          <div className="grid grid-cols-2 gap-4">
-            <span>
-              <ProposalForm.Label htmlFor="clientName">
-                Nome do cliente
+        <section className="lg:grid grid-cols-2">
+          <ProposalForm.Root ref={formRef}>
+            <div className="grid grid-cols-2 gap-4">
+              <span>
+                <ProposalForm.Label htmlFor="clientName">
+                  Nome do cliente
+                </ProposalForm.Label>
+                <ProposalForm.Input
+                  id="clientName"
+                  proposalFormData={proposalFormData}
+                  setProposalFormData={setProposalFormData}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    updateField("clientName", event.target.value)
+                  }
+                />
+              </span>
+              <span>
+                <ProposalForm.Label htmlFor="freelancerName">
+                  Nome do Freelancer
+                </ProposalForm.Label>
+                <ProposalForm.Input
+                  id="freelancerName"
+                  proposalFormData={proposalFormData}
+                  setProposalFormData={setProposalFormData}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    updateField("freelancerName", event.target.value)
+                  }
+                />
+              </span>
+            </div>
+            <span className="lg:max-w-[80%]">
+              <ProposalForm.Label htmlFor="projectDescription">
+                Projeto / serviço
               </ProposalForm.Label>
+              <ProposalForm.Textarea
+                id="projectDescription"
+                onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  updateField("projectDescription", event.target.value)
+                }
+              ></ProposalForm.Textarea>
+            </span>
+            <div className="flex flex-col">
+              <ProposalForm.Label htmlFor="">
+                Itens / entregas
+              </ProposalForm.Label>
+              <div className="w-full flex gap-4 flex-wrap">
+                {proposalFormData.items.map((item, index) => (
+                  <span key={index} className="w-[46%] relative">
+                    <ProposalForm.Input
+                      key={item.id}
+                      id={item.id}
+                      hasDeleteButton
+                      placeholder={`Item ${index + 1}`}
+                      proposalFormData={proposalFormData}
+                      setProposalFormData={setProposalFormData}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                        updateItem(index, event.target.value)
+                      }
+                      value={item.content}
+                    />
+                  </span>
+                ))}
+                <div className="flex gap-2">
+                  <Button
+                    buttonType="add"
+                    actions={(event: React.MouseEvent) => {
+                      event.preventDefault();
+                      const newItem = createNewItem();
+                      setProposalFormData({
+                        ...proposalFormData,
+                        items: [...proposalFormData.items, newItem],
+                      });
+                    }}
+                  >
+                    Adicionar novo item +
+                  </Button>
+                  {proposalFormData.items.length > 0 && (
+                    <Button
+                      buttonType="remove"
+                      actions={(event: React.MouseEvent) => {
+                        event.preventDefault();
+                        setProposalFormData({ ...proposalFormData, items: [] });
+                      }}
+                    >
+                      Remover todos os items
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+            <span className="w-1/2">
+              <ProposalForm.Label htmlFor="deadline">Prazo</ProposalForm.Label>
               <ProposalForm.Input
-                id="clientName"
-                setFormData={setProposalFormData}
-                field="clientName"
-                proposalFormData={proposalFormData}
+                id="deadline"
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  updateField("deadline", event.target.value)
+                }
+                placeholder="Ex: 15 dias"
               />
             </span>
-            <span>
-              <ProposalForm.Label htmlFor="freelancerName">
-                Nome do Freelancer
+            <span className="w-1/2">
+              <ProposalForm.Label htmlFor="totalPrice">
+                Valor total
               </ProposalForm.Label>
               <ProposalForm.Input
-                id="freelancerName"
-                setFormData={setProposalFormData}
-                field="freelancerName"
-                proposalFormData={proposalFormData}
+                id="totalPrice"
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  updateField("totalPrice", event.target.value)
+                }
               />
             </span>
-          </div>
-          <span>
-            <ProposalForm.Label htmlFor="projectDescription">
-              Projeto / serviço
-            </ProposalForm.Label>
-            <ProposalForm.Textarea
-              id="projectDescription"
-              field="projectDescription"
-              proposalFormData={proposalFormData}
-              setProposalFormData={setProposalFormData}
-            ></ProposalForm.Textarea>
-          </span>
-          
-        </ProposalForm.Root>
+            <span className="lg:max-w-[80%]">
+              <ProposalForm.Label htmlFor="paymentTerms">
+                Condições de pagamento
+              </ProposalForm.Label>
+              <ProposalForm.Textarea
+                id="paymentTerms"
+                onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  updateField("paymentTerms", event.target.value)
+                }
+              />
+            </span>
+            <span className="lg:max-w-[80%]">
+              <ProposalForm.Label htmlFor="notes">
+                Condições de pagamento
+              </ProposalForm.Label>
+              <ProposalForm.Textarea
+                id="notes"
+                onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  updateField("notes", event.target.value)
+                }
+              />
+            </span>
+          </ProposalForm.Root>
+        </section>
       </main>
     </>
   );
