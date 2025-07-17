@@ -17,3 +17,5 @@
   --radius-default-radius: 4px;
   --breakpoint-xs: 320px
 }
+
+@layer base{ img{@apply inline-block; }}

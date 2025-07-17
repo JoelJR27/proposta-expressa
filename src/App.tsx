@@ -5,13 +5,15 @@ import { ProposalForm } from "./components/ProposalForm";
 import { useProposalForm } from "./hooks/useProposalForm";
 import { createNewItem } from "./utils/createNewItem";
 import { Button } from "./components/Button";
+import { Preview } from "./components/Preview";
+import { downloadPDF } from "./utils/downloadPDF";
+import { handleProperties } from "./utils/handleProperties";
 
 function App() {
   const { proposalFormData, setProposalFormData, updateField, updateItem } =
     useProposalForm();
   const formRef = useRef<HTMLFormElement | null>(null);
-  console.log(proposalFormData);
-  console.log(proposalFormData.items);
+  const divPreviewRef = useRef<HTMLDivElement | null>(null);
   return (
     <>
       <Header.Root>
@@ -142,6 +144,7 @@ function App() {
               </ProposalForm.Label>
               <ProposalForm.Input
                 id="totalPrice"
+                placeholder="Ex: 1000"
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                   updateField("totalPrice", event.target.value)
                 }
@@ -160,7 +163,7 @@ function App() {
             </span>
             <span className="lg:max-w-[80%]">
               <ProposalForm.Label htmlFor="notes">
-                Condições de pagamento
+                Observações finais
               </ProposalForm.Label>
               <ProposalForm.Textarea
                 id="notes"
@@ -170,6 +173,96 @@ function App() {
               />
             </span>
           </ProposalForm.Root>
+
+          <Preview.Root>
+            <Preview.Container ref={divPreviewRef}>
+              <Preview.Title>Previsualização</Preview.Title>
+              {proposalFormData.clientName && (
+                <Preview.InfosContainer>
+                  <Preview.FieldTitle>Cliente:</Preview.FieldTitle>
+                  <Preview.Infos>{proposalFormData.clientName}</Preview.Infos>
+                </Preview.InfosContainer>
+              )}
+              {proposalFormData.freelancerName && (
+                <Preview.InfosContainer>
+                  <Preview.FieldTitle>Freelancer:</Preview.FieldTitle>
+                  <Preview.Infos>
+                    {proposalFormData.freelancerName}
+                  </Preview.Infos>
+                </Preview.InfosContainer>
+              )}
+              {proposalFormData.projectDescription && (
+                <Preview.InfosContainer>
+                  <Preview.FieldTitle>Descrição do projeto:</Preview.FieldTitle>
+                  <Preview.Infos>
+                    {proposalFormData.projectDescription}
+                  </Preview.Infos>
+                </Preview.InfosContainer>
+              )}
+              {proposalFormData.items && proposalFormData.items.length > 0 && (
+                <>
+                  <Preview.FieldTitle>Itens a entregar:</Preview.FieldTitle>
+                  <Preview.ItemsList>
+                    {proposalFormData.items.map((item) => (
+                      <Preview.Item key={item.id}>{item.content}</Preview.Item>
+                    ))}
+                  </Preview.ItemsList>
+                </>
+              )}
+              {proposalFormData.deadline && (
+                <Preview.InfosContainer>
+                  <Preview.FieldTitle>Prazo: </Preview.FieldTitle>
+                  <Preview.Infos>{proposalFormData.deadline}</Preview.Infos>
+                </Preview.InfosContainer>
+              )}
+              {proposalFormData.totalPrice && (
+                <Preview.InfosContainer>
+                  <Preview.FieldTitle>Valor total: </Preview.FieldTitle>
+                  <Preview.Infos>
+                    {isNaN(Number(proposalFormData.totalPrice))
+                      ? "Digite apenas números!"
+                      : Number(proposalFormData.totalPrice).toLocaleString(
+                          "pt-br",
+                          {
+                            style: "currency",
+                            currency: "BRL",
+                          }
+                        )}
+                  </Preview.Infos>
+                </Preview.InfosContainer>
+              )}
+              {proposalFormData.paymentTerms && (
+                <Preview.InfosContainer>
+                  <Preview.FieldTitle>Pagamento:</Preview.FieldTitle>
+                  <Preview.Infos>{proposalFormData.paymentTerms}</Preview.Infos>
+                </Preview.InfosContainer>
+              )}
+              {proposalFormData.notes && (
+                <Preview.InfosContainer>
+                  <Preview.FieldTitle>Observações:</Preview.FieldTitle>
+                  <Preview.Infos>{proposalFormData.notes}</Preview.Infos>
+                </Preview.InfosContainer>
+              )}
+            </Preview.Container>
+            <button
+              className="ml-2 px-8 py-4 bg-primary-blue text-background text-lg font-semibold rounded-default-radius cursor-pointer hover:bg-secondary-blue transition-colors duration-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              onClick={() => downloadPDF(divPreviewRef.current)}
+              disabled={
+                //   Object.values(proposalFormData).some((value) => {
+                //   if (typeof value === "object") {
+                //     if (value.length < 1) return true;
+                //     return Object.values(value).some(
+                //       (content) => content.content?.trim() === ""
+                //     );
+                //   }
+                //   return value.trim() === "";
+                // })
+                handleProperties(proposalFormData)
+              }
+            >
+              Baixar PDF
+            </button>
+          </Preview.Root>
         </section>
       </main>
     </>
