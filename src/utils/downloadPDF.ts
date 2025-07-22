@@ -8,5 +8,5 @@ export function downloadPDF<E extends HTMLElement>(element: E | null) {
     jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
   };
 
-  html2pdf.set(opt).from(element).saveAs();
+  html2pdf().set(opt).from(element).saveAs();
 }
