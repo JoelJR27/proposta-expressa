@@ -1,5 +1,5 @@
 import html2pdf from "html2pdf.js";
-export function downloadPDF<E>(element: E | null) {
+export function downloadPDF<E extends HTMLElement>(element: E | null) {
   const opt = {
     margin: 0,
     filename: "proposta.pdf",
@@ -8,5 +8,5 @@ export function downloadPDF<E>(element: E | null) {
     jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
   };
 
-  html2pdf().set(opt).from(element).saveAs();
+  html2pdf.set(opt).from(element).saveAs();
 }
